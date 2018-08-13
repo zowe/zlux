@@ -1,0 +1,45 @@
+[submodule "zlux-example-server"]
+	path = zlux-example-server
+	url = git@github.com:gizafoundation/zlux-example-server.git
+[submodule "sample-app"]
+	path = sample-app
+	url = git@github.com:gizafoundation/sample-app.git
+[submodule "tn3270-ng2"]
+	path = tn3270-ng2
+	url = git@github.com:gizafoundation/tn3270-ng2.git
+[submodule "zos-subsystems"]
+	path = zos-subsystems
+	url = git@github.com:gizafoundation/zos-subsystems.git
+[submodule "zlux-app-manager"]
+	path = zlux-app-manager
+	url = git@github.com:gizafoundation/zlux-app-manager.git
+[submodule "zlux-ng2"]
+	path = zlux-ng2
+	url = git@github.com:gizafoundation/zlux-ng2.git
+[submodule "zlux-platform"]
+	path = zlux-platform
+	url = git@github.com:gizafoundation/zlux-platform.git
+[submodule "zlux-proxy-server"]
+	path = zlux-proxy-server
+	url = git@github.com:gizafoundation/zlux-proxy-server.git
+[submodule "zlux-shared"]
+	path = zlux-shared
+	url = git@github.com:gizafoundation/zlux-shared.git
+[submodule "zlux-build"]
+	path = zlux-build
+	url = git@github.com:gizafoundation/zlux-build.git
+[submodule "sample-iframe-app"]
+	path = sample-iframe-app
+	url = git@github.com:gizafoundation/sample-iframe-app.git
+[submodule "vt-ng2"]
+	path = vt-ng2
+	url = git@github.com:gizafoundation/vt-ng2.git
+[submodule "zosmf-auth"]
+	path = zosmf-auth
+	url = git@github.com:gizafoundation/zosmf-auth.git
+[submodule "zss-auth"]
+	path = zss-auth
+	url = git@github.com:gizafoundation/zss-auth.git
+[submodule "explorer-server-auth"]
+	path = explorer-server-auth
+	url = git@github.com:gizafoundation/explorer-server-auth.git
