@@ -1,45 +1,45 @@
 [submodule "zlux-example-server"]
 	path = zlux-example-server
-	url = git@github.com:gizafoundation/zlux-example-server.git
+	url = https://github.com/zowe/zlux-example-server.git
 [submodule "sample-app"]
 	path = sample-app
-	url = git@github.com:gizafoundation/sample-app.git
+	url = https://github.com/zowe/sample-app.git
 [submodule "tn3270-ng2"]
 	path = tn3270-ng2
-	url = git@github.com:gizafoundation/tn3270-ng2.git
+	url = https://github.com/zowe/tn3270-ng2.git
 [submodule "zos-subsystems"]
 	path = zos-subsystems
-	url = git@github.com:gizafoundation/zos-subsystems.git
+	url = https://github.com/zowe/zos-subsystems.git
 [submodule "zlux-app-manager"]
 	path = zlux-app-manager
-	url = git@github.com:gizafoundation/zlux-app-manager.git
+	url = https://github.com/zowe/zlux-app-manager.git
 [submodule "zlux-ng2"]
 	path = zlux-ng2
-	url = git@github.com:gizafoundation/zlux-ng2.git
+	url = https://github.com/zowe/zlux-ng2.git
 [submodule "zlux-platform"]
 	path = zlux-platform
-	url = git@github.com:gizafoundation/zlux-platform.git
+	url = https://github.com/zowe/zlux-platform.git
 [submodule "zlux-proxy-server"]
 	path = zlux-proxy-server
-	url = git@github.com:gizafoundation/zlux-proxy-server.git
+	url = https://github.com/zowe/zlux-proxy-server.git
 [submodule "zlux-shared"]
 	path = zlux-shared
-	url = git@github.com:gizafoundation/zlux-shared.git
+	url = https://github.com/zowe/zlux-shared.git
 [submodule "zlux-build"]
 	path = zlux-build
-	url = git@github.com:gizafoundation/zlux-build.git
+	url = https://github.com/zowe/zlux-build.git
 [submodule "sample-iframe-app"]
 	path = sample-iframe-app
-	url = git@github.com:gizafoundation/sample-iframe-app.git
+	url = https://github.com/zowe/sample-iframe-app.git
 [submodule "vt-ng2"]
 	path = vt-ng2
-	url = git@github.com:gizafoundation/vt-ng2.git
+	url = https://github.com/zowe/vt-ng2.git
 [submodule "zosmf-auth"]
 	path = zosmf-auth
-	url = git@github.com:gizafoundation/zosmf-auth.git
+	url = https://github.com/zowe/zosmf-auth.git
 [submodule "zss-auth"]
 	path = zss-auth
-	url = git@github.com:gizafoundation/zss-auth.git
+	url = https://github.com/zowe/zss-auth.git
 [submodule "explorer-server-auth"]
 	path = explorer-server-auth
-	url = git@github.com:gizafoundation/explorer-server-auth.git
+	url = https://github.com/zowe/explorer-server-auth.git
