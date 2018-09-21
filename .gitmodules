@@ -43,3 +43,6 @@
 [submodule "explorer-server-auth"]
 	path = explorer-server-auth
 	url = git@github.com:zowe/explorer-server-auth.git
+[submodule "zlux-workflow"]
+	path = zlux-workflow
+	url = git@github.com:zowe/zlux-workflow.git
