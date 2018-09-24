@@ -1,9 +1,3 @@
-[submodule "zlux-example-server"]
-	path = zlux-example-server
-	url = git@github.com:zowe/zlux-example-server.git
-[submodule "sample-app"]
-	path = sample-app
-	url = git@github.com:zowe/sample-app.git
 [submodule "tn3270-ng2"]
 	path = tn3270-ng2
 	url = git@github.com:zowe/tn3270-ng2.git
@@ -19,18 +13,12 @@
 [submodule "zlux-platform"]
 	path = zlux-platform
 	url = git@github.com:zowe/zlux-platform.git
-[submodule "zlux-proxy-server"]
-	path = zlux-proxy-server
-	url = git@github.com:zowe/zlux-proxy-server.git
 [submodule "zlux-shared"]
 	path = zlux-shared
 	url = git@github.com:zowe/zlux-shared.git
 [submodule "zlux-build"]
 	path = zlux-build
 	url = git@github.com:zowe/zlux-build.git
-[submodule "sample-iframe-app"]
-	path = sample-iframe-app
-	url = git@github.com:zowe/sample-iframe-app.git
 [submodule "vt-ng2"]
 	path = vt-ng2
 	url = git@github.com:zowe/vt-ng2.git
@@ -46,3 +34,12 @@
 [submodule "zlux-workflow"]
 	path = zlux-workflow
 	url = git@github.com:zowe/zlux-workflow.git
+[submodule "sample-angular-app"]
+	path = sample-angular-app
+	url = git@github.com:zowe/sample-app.git
+[submodule "react-sample-app"]
+	path = react-sample-app
+	url = git@github.com:zowe/react-sample-app.git
+[submodule "sample-react-app"]
+	path = sample-react-app
+	url = git@github.com:zowe/react-sample-app.git
