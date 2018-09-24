@@ -37,9 +37,15 @@
 [submodule "sample-angular-app"]
 	path = sample-angular-app
 	url = git@github.com:zowe/sample-app.git
-[submodule "react-sample-app"]
-	path = react-sample-app
-	url = git@github.com:zowe/react-sample-app.git
 [submodule "sample-react-app"]
 	path = sample-react-app
 	url = git@github.com:zowe/react-sample-app.git
+[submodule "sample-iframe-app"]
+	path = sample-iframe-app
+	url = git@github.com:1000TurquoisePogs/sample-iframe-app.git
+[submodule "zlux-proxy-server"]
+	path = zlux-proxy-server
+	url = git@github.com:1000TurquoisePogs/zlux-proxy-server.git
+[submodule "zlux-example-server"]
+	path = zlux-example-server
+	url = git@github.com:1000TurquoisePogs/zlux-example-server.git
