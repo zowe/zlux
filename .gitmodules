@@ -1,9 +1,6 @@
 [submodule "tn3270-ng2"]
 	path = tn3270-ng2
 	url = git@github.com:zowe/tn3270-ng2.git
-[submodule "zos-subsystems"]
-	path = zos-subsystems
-	url = git@github.com:zowe/zos-subsystems.git
 [submodule "zlux-app-manager"]
 	path = zlux-app-manager
 	url = git@github.com:zowe/zlux-app-manager.git
