@@ -1,12 +1,6 @@
-[submodule "tn3270-ng2"]
-	path = tn3270-ng2
-	url = git@github.com:zowe/tn3270-ng2.git
 [submodule "zlux-app-manager"]
 	path = zlux-app-manager
 	url = git@github.com:zowe/zlux-app-manager.git
-[submodule "zlux-ng2"]
-	path = zlux-ng2
-	url = git@github.com:zowe/zlux-ng2.git
 [submodule "zlux-platform"]
 	path = zlux-platform
 	url = git@github.com:zowe/zlux-platform.git
@@ -16,30 +10,6 @@
 [submodule "zlux-build"]
 	path = zlux-build
 	url = git@github.com:zowe/zlux-build.git
-[submodule "sample-iframe-app"]
-	path = sample-iframe-app
-	url = git@github.com:zowe/sample-iframe-app.git
-[submodule "vt-ng2"]
-	path = vt-ng2
-	url = git@github.com:zowe/vt-ng2.git
-[submodule "zosmf-auth"]
-	path = zosmf-auth
-	url = git@github.com:zowe/zosmf-auth.git
-[submodule "zss-auth"]
-	path = zss-auth
-	url = git@github.com:zowe/zss-auth.git
-[submodule "zlux-workflow"]
-	path = zlux-workflow
-	url = git@github.com:zowe/zlux-workflow.git
-[submodule "sample-react-app"]
-	path = sample-react-app
-	url = git@github.com:zowe/sample-react-app.git
-[submodule "zlux-editor"]
-	path = zlux-editor
-	url = git@github.com:zowe/zlux-editor.git
-[submodule "sample-angular-app"]
-	path = sample-angular-app
-	url = git@github.com:zowe/sample-angular-app.git
 [submodule "zlux-server-framework"]
 	path = zlux-server-framework
 	url = git@github.com:zowe/zlux-server-framework.git
