@@ -1,8 +1,13 @@
 # Application Conformance Summary
 
-An Application must follow meet the following requirements to align with the Zowe Conformance Program:
+An Application must follow meet the following requirements to align with the Zowe Conformance Program. 
+Not all sections will apply to every Application.
+For example, 
+* Not all Applications will have web content, so **Web** would not apply. 
+* Not all applications have user storage, so **Storage** would not apply.
 
-Web
+
+## Web
 * DOM elements should not be placed on a parent that is above the provided Zowe viewport (and if present, Zowe Window)
 * Network requests to other Apps and Zowe Services must be made through the URI Broker whenever possible.
     * If a route to a Zowe Service is not yet present in the URI Broker, an exception is granted after logging a request for inclusion of said service
@@ -16,7 +21,7 @@ Web
     * See https://github.com/zowe/zlux-app-manager/blob/master/bootstrap/package-lock.json
     * See https://github.com/zowe/zlux-app-manager/blob/master/virtual-desktop/package.json
     
-Web **Recommendations**
+### Web **Recommendations**
 * Web apps should extend the framework's default build scripts for webpack and typescript
     * Example Webpack Angular: https://github.com/zowe/sample-react-app/blob/master/webClient/webpack.config.js
     * Example Webpack React: https://github.com/zowe/sample-react-app/blob/master/webClient/webpack.config.js
@@ -24,15 +29,15 @@ Web **Recommendations**
     * Example Typescript React: https://github.com/zowe/sample-react-app/blob/master/webClient/tsconfig.json
 * Web and service code that depends on NPM libraries should depend on specific or patch level ("~") variant versions, rather than the default minor-level ("^")
 
-Localization and Internationalization (l10n and i18n)
+## Localization and Internationalization (l10n and i18n)
 * The active language to be used for string selection must be retrieved using ZoweZLUX.globalization.getLanguage(), which determines language by multiple factors.
     * Using the desktop language setting or operating system language is not allowed.
 
-i18n **Recommendations**
+### i18n **Recommendations**
 * No strings visible in a UI should be hard-coded, rather resource strings must be used in accordance with one of the existing internationalization support mechanisms.
     * Logs should not be internationalized due to difficulty of support.
 
-Packaging
+## Packaging
 * Every plugin must have a unique ID. The ID format follows java package naming conventions. The Zowe project reserves `org.zowe`.
 * Every plugin and each of its services must have a version. 
     * All versions are to be formatted according to semver. Semver allows for 1.2.3[-alpha/beta][+customstring].
@@ -48,22 +53,22 @@ Packaging
     * Code that generates the output for nodeJS services that go into `lib` should be within `nodeService`
     * Code that generates the output for ZSS services that go into `lib` should be within `zssService`
     
-Documentation
+## Documentation
 * Every HTTP API must be documented in swagger 2.0. The swagger document must be stored in `doc/swagger`
     * In addition, it is recommended to have documentation about the format of any Websocket APIs, to be placed within `doc`
     
-Logging
+## Logging
 * Apps web components, or App Framework services (eg Javascript and Typescript) must log only through the "zlux" logger.
   Use of console.log is forbidden. See https://github.com/zowe/zlux/wiki/Logging
 * ZSS services log only through the Zowe ZSS Logger. See https://github.com/zowe/zlux/wiki/Logging and https://github.com/zowe/zowe-common-c/blob/master/c/logging.c
 * Passwords must never be logged
 
-Logging **Recommendations**
+### Logging **Recommendations**
 * Error reporting should follow the standard tooling
     * Web reference: https://github.com/zowe/zlux/wiki/Error-Reporting-UI
     * Service reference: https://github.com/zowe/zlux-proxy-server/pull/8
 
-Storage
+## Storage
 * User preferences, if applicable to a plugin, must be stored through the configuration data service.
   * Exceptions may be granted for software that uses pre-existing storage structures, such as in DB2.
   * See link for reference: https://github.com/zowe/zlux/wiki/Configuration-Dataservice
