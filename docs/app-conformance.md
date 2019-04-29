@@ -35,7 +35,7 @@ For example,
 
 ### i18n **Recommendations**
 * No strings visible in a UI should be hard-coded, rather resource strings must be used in accordance with one of the existing internationalization support mechanisms.
-    * Logs should not be internationalized due to difficulty of support.
+    * Message IDs should be used whenever possible to allow for logs to be internationalized without making them unreadable to people who don't speak that language
 
 ## Packaging
 * Every plugin must have a unique ID. The ID format follows java package naming conventions. The Zowe project reserves `org.zowe`.
