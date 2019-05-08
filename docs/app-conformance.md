@@ -6,13 +6,22 @@ For example,
 * Not all Applications will have web content, so **Web** would not apply. 
 * Not all applications have user storage, so **Storage** would not apply.
 
+## Vision
+We aim to create a virtual desktop where all applications:
+* Are easy to install
+* Exhibit a predictable interaction model
+* Allow discovery of their capabilities
+* Are simple to secure, update, troubleshoot and remove
+* Respect the tenets of secure mainframe computing
+* Do not disturb other applications or the underlying framework
+
 ## Objectives
 * Foster an ecosystem of well-behaved applications that can coexist within the Zowe virtual desktop
 * Encourage common behaviors accross applications to generate familiarity of interaction and support
 * Drive the consolidation of third party dependencies to minimize footprint
-* Support a set of common design/coding practices for ease and standardization of development
-* Support the emergence of a common and simple installation experience
-* Create a framework that supports discoverable app capabilities and app to app exchanges/interactions
+* Support a set of common design/coding practices for ease and standardization of application development
+* Support the emergence of a common and simple application installation experience
+* Create a framework that supports discoverable application capabilities and app to app exchanges/interactions
 
 
 ## Web
