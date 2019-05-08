@@ -1,10 +1,17 @@
 # Application Conformance Summary
 
-An Application must follow meet the following requirements to align with the Zowe Conformance Program. 
+An Application must meet the following requirements to align with the Zowe Conformance Program. 
 Not all sections will apply to every Application.
 For example, 
 * Not all Applications will have web content, so **Web** would not apply. 
 * Not all applications have user storage, so **Storage** would not apply.
+
+## Objectives
+* Foster an ecosystem of well-behaved applications that can coexist within the Zowe virtual desktop
+* Encourage common behaviors accross applications to generate familiarity of interaction and support
+* Drive the consolidation of third party dependencies to minimize footprint
+* Support a set of common design/coding practices for ease and standardization of development
+* Support the emergence of a common and simple installation experience
 
 
 ## Web
