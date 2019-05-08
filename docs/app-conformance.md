@@ -1,11 +1,5 @@
 # Application Conformance Summary
 
-An Application must meet the following requirements to align with the Zowe Conformance Program. 
-Not all sections will apply to every Application.
-For example, 
-* Not all Applications will have web content, so **Web** would not apply. 
-* Not all applications have user storage, so **Storage** would not apply.
-
 ## Vision
 We aim to create a virtual desktop where all applications:
 * Are easy to install
@@ -23,6 +17,12 @@ We aim to create a virtual desktop where all applications:
 * Support the emergence of a common and simple application installation experience
 * Create a framework that supports discoverable application capabilities and app to app exchanges/interactions
 
+## Conformance Definition
+An Application must meet the following requirements to align with the Zowe Conformance Program, where applicable.
+Not all sections will apply to every Application.
+For example, 
+* Not all Applications will have web content, so **Web** would not apply. 
+* Not all applications have user storage, so **Storage** would not apply.
 
 ## Web
 * DOM elements should not be placed on a parent that is above the provided Zowe viewport (and if present, Zowe Window)
