@@ -12,6 +12,7 @@ For example,
 * Drive the consolidation of third party dependencies to minimize footprint
 * Support a set of common design/coding practices for ease and standardization of development
 * Support the emergence of a common and simple installation experience
+* Create a framework that supports discoverable app capabilities and app to app exchanges/interactions
 
 
 ## Web
