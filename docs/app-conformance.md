@@ -21,7 +21,7 @@ We aim to create a virtual desktop where all applications:
 An Application must meet the following requirements to align with the Zowe Conformance Program, where applicable.
 Not all sections will apply to every Application.
 For example, 
-* Not all Applications will have web content, so **Web** would not apply. 
+* Not all Applications will have web content, so **Web** and **UI Design** would not apply. 
 * Not all applications have user storage, so **Storage** would not apply.
 
 ## Web
@@ -45,6 +45,12 @@ For example,
     * Example Typescript Angular: https://github.com/zowe/sample-angular-app/blob/master/webClient/tsconfig.json
     * Example Typescript React: https://github.com/zowe/sample-react-app/blob/master/webClient/tsconfig.json
 * Web and service code that depends on NPM libraries should depend on specific or patch level ("~") variant versions, rather than the default minor-level ("^")
+
+## UI Design
+TODO
+
+### UI Design **Recommendations**
+TODO
 
 ## Localization and Internationalization (l10n and i18n)
 * The active language to be used for string selection must be retrieved using ZoweZLUX.globalization.getLanguage(), which determines language by multiple factors.
