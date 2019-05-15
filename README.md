@@ -15,8 +15,6 @@ If you want to get started with a Zowe for the first time, it is best to start b
 
 New users should take a look at [zlux-app-server](https://github.com/zowe/zlux-app-server) to see how a simple zLUX server is assembled. You'll see the build scripts used to create the deploy/runtime folder structure needed, and a JS file that creates a custom implementation of the Zowe nodeJS-based server.
 
-#### Note: When using zlux-app-server or any Zowe server which needs to make use of the ZSS (Z Secure Services) Server , please reach out to Rocket members of Zowe who can help to provide you with the external content required for these. In zlux-app-server in particular, you'll see references to "externals/Rocket" where Rocket content external to Github should be placed for full functionality.
-
 This program and the accompanying materials are
 made available under the terms of the Eclipse Public License v2.0 which accompanies
 this distribution, and is available at https://www.eclipse.org/legal/epl-v20.html
