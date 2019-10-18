@@ -1,0 +1,31 @@
+package:
+  name: "zowe-ui"
+  version: "1.6.0"
+
+source:
+  path: ../
+
+build:
+  number: 0
+  string: "zowe"
+#  noarch: generic
+#  features:
+#    - zowe
+
+requirements:
+  build:
+    - python >=3
+    - setuptools
+    - nodejs >=6.14.0,<9.0.0
+  run:
+    - nodejs >=6.14.0,<9.0.0 # [win]
+    - nodejs >=6.14.0,<9.0.0 # [unix]    
+
+about:
+  home: "https://zowe.org"
+  license: "EPL-2.0"
+  license_family: "OTHER"
+  license_file: "LICENSE"
+  summary: "Zowe ZLUX"
+  doc_url: ""
+  dev_url: ""
