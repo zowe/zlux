@@ -84,7 +84,8 @@ cp -r zlux-app-manager $PREFIX/lib/zowe/zlux
 cp -r zlux-server-framework $PREFIX/lib/zowe/zlux
 rm -rf zlux-app-manager zlux-server-framework
 rm -rf */package.json */*/package.json */*/*/package.json */*/*/*/package.json
-cp build/bin/zowe-ui $PREFIX/bin
+rm -f build/bin/*.bat
+cp build/bin/* $PREFIX/bin
 mkdir -p $PREFIX/etc
 cp -r build/etc/* $PREFIX/etc/
 cp -r . $PREFIX/lib/zowe/zlux

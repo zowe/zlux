@@ -1,0 +1,47 @@
+#!/bin/sh
+# This program and the accompanying materials are
+# made available under the terms of the Eclipse Public License v2.0 which accompanies
+# this distribution, and is available at https://www.eclipse.org/legal/epl-v20.html
+# 
+# SPDX-License-Identifier: EPL-2.0
+# 
+# Copyright Contributors to the Zowe Project.
+
+if [ -z "$INSTANCE_DIR" ]
+then
+    if [ ! -z "$USER_DIR" ]
+    then
+        export INSTANCE_DIR=$USER_DIR
+    else
+        export INSTANCE_DIR=${HOME}/.zowe
+    fi
+fi
+
+mkdir -p "${INSTANCE_DIR}/app-fw"
+
+if [ -z "$ZLUX_NODE_LOG_DIR" ]
+then
+    export ZLUX_NODE_LOG_DIR=${INSTANCE_DIR}/log
+fi
+mkdir -p "${ZLUX_NODE_LOG_DIR}"
+
+dir="$(dirname $(readlink -f $0))"
+cd $dir/../lib/zowe/zlux/zlux-server-framework/node_modules
+export NODE_PATH=$PWD
+cd ../../zlux-app-server/bin
+
+if [ -z "$ZLUX_CONFIG_FILE" ]
+then
+    if [ -f "${INSTANCE_DIR}/app-fw/config.json" ]
+    then
+        export ZLUX_CONFIG_FILE="${INSTANCE_DIR}/app-fw/config.json"
+    else
+        node "../../zlux-app-server/lib/initInstance.js"
+        echo "Initialized configuration"
+        if [ -f "${INSTANCE_DIR}/app-fw/config.json" ]
+        then
+            export ZLUX_CONFIG_FILE="${INSTANCE_DIR}/app-fw/config.json"
+        fi
+    fi
+fi
+/bin/sh ./nodeCluster.sh "$@"
