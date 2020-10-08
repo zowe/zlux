@@ -1,0 +1,19 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {   "address": "winmvs3b.hursley.ibm.com",
+            "type": "node",
+            "request": "launch",
+            "name": "Launch zssServer",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "remoteRoot": "/u/daviesj/git/zlux/zlux-app-server/bin",
+            "program": "zssServer",
+            "runtimeExecutable": "/u/daviesj/git/zlux/zlux-app-server/bin/zssServer"
+        }
+    ]
+}
