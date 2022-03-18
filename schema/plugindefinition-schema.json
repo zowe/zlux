@@ -1,0 +1,480 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema",
+  "$id": "https://github.com/zowe/zlux/plugin.schema.json",
+  "title": "Application Framework Plugin Definition",
+  "description": "Properties seen in a pluginDefinition.json file which describes a plugin of the Zowe Application Framework",
+  "type": "object",
+  "oneOf": [
+    { "$ref": "#/$defs/bootstrapPlugin" },
+    { "$ref": "#/$defs/desktopPlugin" },
+    { "$ref": "#/$defs/libraryPlugin" },
+    { "$ref": "#/$defs/applicationPlugin" },
+    { "$ref": "#/$defs/nodeAuthenticationPlugin" }
+  ],
+  "$defs": {
+    "reverseDomainNotation": {
+      "type": "string",
+      "pattern": "^[A-Za-z]{2,6}((?!-)\\.[A-Za-z0-9-]{1,63}(?<!-))+$"
+    },
+    "appFwPlugin": {
+      "type": "object",
+      "required": ["identifier", "apiVersion", "pluginVersion", "pluginType"],
+      "additionalProperties": true,
+      "propeties": {
+        "identifier": {
+          "$ref": "#/$defs/reverseDomainNotation",
+          "description": "Each plugin must have a zowe-wide unique ID in reverse domain name notation"
+        },
+        "apiVersion": {
+          "$ref": "#/$defs/semverVersion",
+          "description": "Describes which version of this schema the plugin is compatible with"
+        },
+        "pluginVersion": {
+          "$ref": "#/$defs/semverVersion",
+          "description": "Describes the plugin's version. The app-server only runs 1 version of each plugin."
+        },
+        "pluginType": {
+          "type": "string",
+          "enum": [ "bootstrap", "desktop", "library", "application", "nodeAuthentication" ]
+        },
+        "license": {
+          "type": "string",
+          "description": "An SPDX string describing which license the plugin is available under"
+        },
+        "author": {
+          "type": "string",
+          "description": "States who the writers of the plugin are"
+        },
+        "homepage": {
+          "type": "string",
+          "description": "A website URL of the writers of the plugin"
+        },
+        "requirements": {
+          "type": "object",
+          "description": "TODO",
+          "properties": {
+            "components": {
+              "type": "object",
+              "patternProperties": {
+                "^.*$": {
+                  "type": "object",
+                  "properties": {
+                    "os": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "description": "An OS type as reported by nodejs os.platform()"
+                      }
+                    },
+                    "cpu": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "description": "A CPU architecture type as reported by nodejs os.arch()"
+                      }
+                    },
+                    "version": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/$defs/semverRange"
+                      }
+                    },
+                    "endpoints": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "dataServices": {
+          "type": "array",
+          "items": {
+            "anyOf": [
+              { "$ref": "#/$defs/routerService" },
+              { "$ref": "#/$defs/serviceService" },
+              { "$ref": "#/$defs/importService" },
+              { "$ref": "#/$defs/externalService" },
+              { "$ref": "#/$defs/nodeService" }
+            ]
+          },
+          "uniqueItems": true
+        },
+        "configurationData": {
+          "type": "object",
+          "description": "TODO",
+          "properties": {
+            "resources": {
+              "type": "object"
+            }
+          }
+        }
+      }
+    },
+    "bootstrapPlugin": {
+      "$ref": "#/$defs/appFwPlugin",
+      "properties": {
+        "pluginType": {
+          "const": "bootstrap"
+        },
+        "webContent": {
+          "$ref": "#/$defs/genericWebContent"
+        }
+      }
+    },
+    "desktopPlugin": {
+      "$ref": "#/$defs/appFwPlugin",
+      "properties": {
+        "pluginType": {
+          "const": "desktop"
+        },
+        "webContent": {
+          "$ref": "#/$defs/nativeWebContent"
+        }
+      }
+    },
+    "applicationPlugin": {
+      "$ref": "#/$defs/appFwPlugin",
+      "properties": {
+        "pluginType": {
+          "const": "application"
+        },
+        "webContent": {
+          "type": "object",
+          "oneOf": [
+            { "$ref": "#/$defs/iframeWebContent" },
+            { "$ref": "#/$defs/genericWebContent" },
+            { "$ref": "#/$defs/nativeWebContent" }
+          ]
+        },
+        "isSystemPlugin": {
+          "type": "boolean",
+          "default": false,
+          "description": "Set this to true to make a plugin that cannot be opened directly by users, but may be invoked by other apps and the application framework itself via app2app communication as needed."
+        }
+      }
+    },
+    "nodeAuthenticationPlugin": {
+      "$ref": "#/$defs/appFwPlugin",
+      "required": [ "filename" ],
+      "properties": {
+        "filename": {
+          "type": "string",
+          "description": "The name of a nodejs file within the /lib directory of the plugin. This file contains a function that is provided with startup context and must contain methods according to its stated capabilities such as authentication and authorization"
+        },
+        "authenticationCategories": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "description": "A short name describing what sort of authentication this plugin can provide, such as LDAP, SAF, etc. If the categories are not known until startup, this info can still be stated at runtime within the javascript code."
+          },
+          "uniqueItems": true
+        }
+      }
+    },
+    "semverVersion": {
+      "type": "string",
+      "description": "A semantic version, see https://semver.org/",
+      "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-((?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\\+([0-9a-zA-Z-]+(?:\\.[0-9a-zA-Z-]+)*))?$"
+    },
+    "semverRange": {
+      "type": "string",
+      "description": "A semantic version, see https://semver.org/",
+      "pattern": "^(([\\^\\~\\>\\<]?)|(>=?)|(<=?))(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-((?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\\+([0-9a-zA-Z-]+(?:\\.[0-9a-zA-Z-]+)*))?$"
+    },
+    "genericWebContent": {
+      "type": "object",
+      "not": {
+        "anyOf": [
+          { "$ref": "#/$defs/nativeWebContent" },
+          { "$ref": "#/$defs/iframeWebContent" }
+        ]
+      },
+      "description": "A webcontent object without the attributes of an application, such as framework, can be used to just serve a plugin's /web folder from the app-server"
+    },
+    "nativeWebContent": {
+      "$ref": "#/$defs/appWebContent",
+      "description": "A Native application is one that provides a /web/main.js file which can be run within the Zowe Desktop when the user clicks its icon",
+      "properties": {
+        "framework": {
+          "type": "string",
+          "enum": [ "angular2", "angular", "react" ]
+        }
+      }
+    },
+    "iframeWebContent": {
+      "$ref": "#/$defs/appWebContent",
+      "description": "An iframe application is one that provides some html file either within the /web folder or found on another server at runtime, which can be embedded within the Zowe Desktop when the user clicks its icon",
+      "properties": {
+        "framework": {
+          "const": "iframe"
+        },
+        "destination": {
+          "type": "string",
+          "description": "A URL with shell-style ${} subtitutions allowed which states which address the iframe should load."
+        },
+        "startingPage": {
+          "type": "string",
+          "description": "A filename within the /web folder of the plugin, which the iframe should load."
+        },
+        "standaloneUseFramework": {
+          "type": "boolean",
+          "default": false,
+          "description": "When true, iframe apps will be launched within the desktop framework so that features like notifications and app2app communication will function identically to the Desktop. When false, opening the iframe app in a standalone page will have it function like an independent website."
+        }
+      }
+    },
+    "appWebContent": {
+      "type": "object",
+      "description": "A description of an application which can be run within the Zowe Desktop",
+      "required": [ "framework", "launchDefinition", "descriptionKey", "descriptionDefault", "defaultWindowStyle" ],
+      "properties": {
+        "framework": {
+          "type": "string",
+          "enum": [ "angular2", "angular", "react", "iframe" ]
+        },
+        "launchDefinition": {
+          "type": "object",
+          "required": [ "pluginShortNameKey", "pluginShortNameDefault", "imageSrc" ],
+          "properties": {
+            "pluginShortNameKey": {
+              "type": "string",
+              "description": "The internationalization key used to display the application's name in the user's chosen language."
+            },
+            "pluginShortNameDefault": {
+              "type": "string",
+              "description": "The name of the application in the default language. Used as a fallback if the user's chosen language has no translation."
+            },
+            "imageSrc": {
+              "type": "string",
+              "description": "A path relative to and within the 'web' folder of the plugin. This image is used as the application's icon"
+            }
+          }
+        },
+        "descriptionKey": {
+          "type": "string",
+          "description": "The internationalization key used to display the application's description in the user's chosen language."
+        },
+        "descriptionDefault": {
+          "type": "string",
+          "description": "The description of the application in the default language. Used as a fallback if the user's chosen language has no translation."
+        },
+        "isSingleWindowApp": {
+          "type": "boolean",
+          "deprecated": true
+        },
+        "defaultWindowStyle": {
+          "type": "object",
+          "description": "Properties that describe the default visuals of the application window, such as size",
+          "required": [ "width", "height" ],
+          "properties": {
+            "width": {
+              "type": "integer",
+              "minimum": 180,
+              "description": "The width of the Zowe Desktop window of the application when first opened"
+            },
+            "height": {
+              "type": "integer",
+              "minimum": 100,
+              "description": "The height of the Zowe Desktop window of the application when first opened"
+            }
+          }
+        }
+      }
+    },
+    "service": {
+      "type": "object",
+      "required": ["type", "version", "name"],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [ "router", "service", "external", "nodeService", "java" ]
+        },
+        "version": {
+          "$ref": "#/$defs/semverVersion"
+        },
+        "name": {
+          "type": "string"
+        }
+      }
+    },
+    "externalService": {
+      "$ref": "#/$defs/service",
+      "description": "A proxy service which is hosted from the app-server",
+      "properties": {
+        "type": {
+          "const": "external"
+        },
+        "urlPrefix": {
+          "type": "string"
+        },
+        "isHttps": {
+          "type": "boolean",
+          "deprecated": true,
+          "description": "Specifies if the proxy is to an HTTP or HTTPS server. It is recommended to use a remote.json file within the workspace instead, as pluginDefinition is a read only object"
+        },
+        "host": {
+          "type": "string",
+          "deprecated": true,
+          "description": "Specifies which hostname or IP is being proxied. It is recommended to use a remote.json file within the workspace instead, as pluginDefinition is a read only object",
+          "format": "hostname"
+        },
+        "port": {
+          "type": "integer",
+          "deprecated": true,
+          "description": "Specifies which port is being proxied. It is recommended to use a remote.json file within the workspace instead, as pluginDefinition is a read only object"
+        }
+      }
+    },
+    "routerService": {
+      "$ref": "#/$defs/service",
+      "description": "An ExpressJS router service hosted from the app-server",
+      "required": ["type", "version", "name", "fileName", "routerFactory"],
+      "properties": {
+        "type": {
+          "const": "router"
+        },
+        "initializerLookupMethod": {
+          "type": "string",
+          "enum": ["external"],
+          "deprecated": true
+        },
+        "dependenciesIncluded": {
+          "type": "boolean",
+          "default": true,
+          "deprecated": true
+        },
+        "fileName": {
+          "type": "string",
+          "description": "A javascript file located within the plugin's 'lib' folder which contains the router factory. The router is for a REST or Websocket API that the app-server will include."
+        },
+        "routerFactory": {
+          "type": "string",
+          "description": "The name of a javascript function found in the file specified in 'fileName' which is given plugin context and must return an expressjs router"
+        },
+        "httpCaching": {
+          "type": "boolean",
+          "default": false,
+          "description": "When false, the app-server will add headers to the service response to tell clients not to cache the response"
+        },
+        "internalOnly": {
+          "type": "boolean",
+          "default": false,
+          "description": "When true, the service can only be reached by other services within the same server via the call() function"
+        }
+      }
+    },
+    "nodeService": {
+      "$ref": "#/$defs/service",
+      "description": "A nodejs callback service that acts upon expressjs request and response objects. It runs within the app-server",
+      "required": ["type", "version", "name", "fileName", "methods", "handlerInstaller"],
+      "deprecated": true,
+      "properties": {
+        "type": {
+          "const": "nodeService"
+        },
+        "initializerLookupMethod": {
+          "type": "string",
+          "enum": [ "external" ]
+        },
+        "dependenciesIncluded": {
+          "type": "boolean",
+          "default": true,
+          "deprecated": true
+        },
+        "fileName": {
+          "type": "string",
+          "description": "A javascript file located within the plugin's 'lib' folder which contains the handler factory. The handler is for a REST or Websocket API that the app-server will include."
+        },
+        "handlerInstaller": {
+          "type": "string",
+          "description": "The name of a javascript function found in the file specified in 'fileName' which is given plugin context and must return a callback function"
+        },
+        "methods": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [ "GET", "PUT", "POST", "DELETE", "OPTIONS", "HEAD" ],
+            "description": "A list of HTTP methods this service will respond to"
+          },
+          "uniqueItems": true
+        }
+      }
+    },
+    "serviceService": {
+      "$ref": "#/$defs/service",
+      "description": "A service that runs within ZSS. It uses a callback written in C that recieves a request and response struct",
+      "required": ["type", "version", "name", "methods", "initializerName"],
+      "properties": {
+        "type": {
+          "const": "service"
+        },
+        "initializerLookupMethod": {
+          "type": "string",
+          "enum": ["external", "internal"],
+          "deprecated": false
+        },
+        "dependenciesIncluded": {
+          "type": "boolean",
+          "default": true,
+          "deprecated": true
+        },
+        "libraryName": {
+          "type": "string",
+          "description": "The path of a 31-bit or 64-bit DLL file relative to and within the plugin's 'lib' folder. It contains a REST or Websocket API that the agent will include."
+        },
+        "libraryName31": {
+          "type": "string",
+          "description": "The path of a 31-bit DLL file relative to and within the plugin's 'lib' folder. It contains a REST or Websocket API that the agent will include."
+        },
+        "libraryName64": {
+          "type": "string",
+          "description": "The path of a 64-bit DLL file relative to and within the plugin's 'lib' folder. It contains a REST or Websocket API that the agent will include."
+        },
+        "methods": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [ "GET", "PUT", "POST", "DELETE" ],
+            "description": "A list of HTTP methods this service will respond to"
+          },
+          "uniqueItems": true
+        },
+        "initializerName": {
+          "type": "string",
+          "description": "The function name that will be called with plugin context to add the service routes to the agent"
+        }
+      }
+    },
+    "importService": {
+      "type": "object",
+      "description": "A service which points to another service. The app-server will setup a URL which calls the source when accessed",
+      "required": [ "type", "sourceName", "localName", "sourcePlugin", "versionRange" ],
+      "properties": {
+        "type": {
+          "const": "import"
+        },
+        "sourceName": {
+          "type": "string",
+          "description": "The name of the service being imported"
+        },
+        "localName": {
+          "type": "string",
+          "description": "The name of this service within this plugin"
+        },
+        "sourcePlugin": {
+          "$ref": "#/$defs/reverseDomainNotation",
+          "description": "The ID of the plugin where the service is being imported from"
+        },
+        "versionRange": {
+          "$ref": "#/$defs/semverRange",
+          "description": "A semver range that describes which version of the service to import"
+        }
+      }
+    }
+  }
+}

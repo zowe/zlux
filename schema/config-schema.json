@@ -1,0 +1,659 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema",
+  "$id": "https://github.com/zowe/zlux/zlux.schema.json",
+  "title": "app-server configuration",
+  "description": "Configuration properties for the app-server, as specified within a configuration file such as zowe.yaml",
+  "type": "object",
+  "required": [ "productDir", "siteDir", "instanceDir", "groupsDir", "usersDir", "pluginsDir", "dataserviceAuthentication", "node" ],
+  "properties": {
+    "node": {
+      "type": "object",
+      "description": "Configuration options specific to the app-server and things it depends upon",
+      "properties": {
+        "https": {
+          "type": "object",
+          "properties": {
+            "port": {
+              "$ref": "#/$defs/tcpPort",
+              "default": 8554
+            },
+            "pfx": {
+              "type": "string",
+              "deprecated": true,
+              "description": "Replaced with use of .p12 files within the key or certificate sections, this attribute was used to load certificates from a .pfx file"
+            },
+            "keys": {
+              "$ref": "#/$defs/certObject"
+            },
+            "certificates": {
+              "$ref": "#/$defs/certObject"
+            },
+            "certificateAuthorities": {
+              "$ref": "#/$defs/certObject"
+            },
+            "certificateRevocationLists": {
+              "$ref": "#/$defs/certObject"
+            },
+            "secureOptions": {
+              "type": "integer",
+              "description": "Controls nodejs' use of OpenSSL via integers composed of the values in the references https://github.com/openssl/openssl/blob/master/include/openssl/ssl.h and https://nodejs.org/api/crypto.html#openssl-options"
+            },
+            "secureProtocol": {
+              "type": "string",
+              "deprecated": true,
+              "description": "Passes through the secureProtocol attribute to TLS calls of nodeJS, as defined within https://nodejs.org/api/tls.html#tlscreatesecurecontextoptions"
+            },
+            "ciphers": {
+              "oneOf": [
+                { "$ref": "#/$defs/nodejsDefaultCiphers" },
+                { "$ref": "#/$defs/zoweDefaultCiphers" },
+                { "$ref": "#/$defs/customCiphers" }
+              ]
+            },
+            "enableTrace": {
+              "type": "boolean",
+              "default": false
+            },
+            "passphrase": {
+              "type": "string",
+              "description": "Used to load encrypted key or certificate objects when needed"
+            },
+            "ipAddresses": {
+              "$ref": "#/$defs/ipsAndHostnames",
+              "default": [ "0.0.0.0" ]
+            }
+          }
+        },
+        "http": {
+          "type": "object",
+          "description": "Allows the app-server to run in HTTP mode. This should never be done without a TLS wrapper such as AT-TLS",
+          "properties": {
+            "port": {
+              "$ref": "#/$defs/tcpPort"
+            },
+            "ipAddresses": {
+              "$ref": "#/$defs/ipsAndHostnames"
+            }
+          }
+        },
+        "mediationLayer": {
+          "type": "object",
+          "description": "Properties relating to how the app-server should interact with and find the API Mediation Layer components",
+          "properties": {
+            "server": {
+              "type": "object",
+              "properties": {
+                "isHttps": {
+                  "type": "boolean",
+                  "description": "Controls if connections to the API Mediation Layer gateway and/or discovery service should be HTTP or HTTPS"
+                },
+                "gatewayHostname": {
+                  "type": "string",
+                  "format": "hostname",
+                  "description": "The hostname or IP where the Zowe Gateway service is running. When not specified, the hostname property is used instead"
+                },
+                "hostname": {
+                  "type": "string",
+                  "format": "hostname",
+                  "description": "The hostname or IP where the Zowe Discovery service is running"
+                },
+                "gatewayPort": {
+                  "$ref": "#/$defs/tcpPort",
+                  "description": "The port where the Zowe Gateway service is running"
+                },
+                "port": {
+                  "$ref": "#/$defs/tcpPort",
+                  "description": "The port where the Zowe Discovery service is running"
+                },
+                "enabled": {
+                  "type": "boolean",
+                  "description": "Controls whether the app-server should register to the Zowe API Mediation Layer as a Eureka Client"
+                },
+                "cachingService": {
+                  "type": "object",
+                  "properties": {
+                    "enabled": {
+                      "type": "boolean",
+                      "description": "Controls whether the app-server storage API can store in the caching service"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "internalRouting": {
+          "type": "boolean",
+          "description": "Controls if app-server should call one REST API from another by using a network call over a loopback address, or issue the request internal to the server by mimicking a network request",
+          "default": false
+        },
+        "allowInvalidTLSProxy": {
+          "type": "boolean",
+          "description": "This boolean sets the inverse value of the nodeJS attribute 'rejectUnauthorized' on any TLS operation within the server. It will allow connections with certificates that cannot be validated for one reason or another.",
+          "default": false
+        },
+        "childProcesses": {
+          "type": "array",
+          "description": "The app-server can start one or more processes as children of itself, and propagate signals sent to the app server to these. This can be used to start related servers at the same time as the app-server.",
+          "items": {
+            "type": "object",
+            "properties": {
+              "path": {
+                "type": "string",
+                "description": "The command to be started via the process spawn() command"
+              },
+              "once": {
+                "type": "boolean",
+                "description": "When true, the child process will only be started from one worker rather than per-worker as would happen in cluster mode otherwise.",
+                "default": false
+              }
+            }
+          }
+        },
+        "session": {
+          "type": "object",
+          "properties": {
+            "timeoutMS": {
+              "type": "integer",
+              "deprecated": true,
+              "description": "No longer read by app-server"
+            },
+            "cookie": {
+              "timeoutMS": {
+                "type": "integer",
+                "description": "Determines the expiration time of the app-server cookie. This does not control other cookies such as ZSS, APIML. The experation time is shown in the /auth response, not as a cookie property. The cookie does not expire but will be rejected after the server expiration time.",
+                "default": -1
+              }
+            }
+          }
+        },
+        "headers": {
+          "type": "object",
+          "description": "Allows customization of http response headers sent by all plugins except those headers that are set as 'override' within a plugin. Each attribute in the object is a header name.",
+          "patternProperties": {
+            "content-security-policy": {
+              "$ref": "#/$defs/headerCustomization",
+              "preset": {
+                "oneOf": [
+                  { "$ref": "#/$defs/cspPresetStrict" },
+                  { "$ref": "#/$defs/cspPresetFrameStrict" }
+                ]
+              }
+            },
+            "^.*$": {
+              "$ref": "#/$defs/headerCustomization"
+            }
+          }
+        },
+        "pluginScanIntervalSec": {
+          "type": "integer",
+          "description": "When set above 0, the app-server will scan pluginsDir every number of seconds to look for plugins to add, allowing you to install new plugins without restarting the server. Note this does not allow upgrade or removal, which need restart or RBAC-controlled management REST API invocation",
+          "default": 0
+        },
+        "rootRedirectURL": {
+          "type": "string",
+          "description": "The URL which the server will redirect to if a request is sent to '/'",
+          "default": "/ZLUX/plugins/org.zowe.zlux.bootstrap/web/"
+        },
+        "noPrompt": {
+          "type": "boolean",
+          "description": "Whether to prompt for a passphrase when a passphrase is needed but not found for a pfx object",
+          "default": false
+        },
+        "noChild": {
+          "type": "boolean",
+          "default": false,
+          "description": "Whether the childProcesses array should be skipped on startup."
+        },
+        "loopbackAddress": {
+          "description": "The address the app-server should use to contact itself if a loopback request is needed by a call() operation from a plugin",
+          "$ref": "#/$defs/ipOrHostname"
+        },
+        "hostname": {
+          "type": "string",
+          "format": "hostname",
+          "description": "When not specified, the nodejs value of os.hostname() is used. This value is used to tell clients and other servers the location of the app-server."
+        }
+      }
+    },
+    "agent": {
+      "type": "object",
+      "description": "Configuration options specific to app-server agents, such as ZSS. These options are used to configure the agent, but also to tell app-server about the agent configuration",
+      "properties": {
+        "host": {
+          "type": "string",
+          "description": "Tells app-server which hostname or ip to communicate with the agent at"
+        },
+        "https": {
+          "type": "object",
+          "description": "Configures the agent to use HTTPS.",
+          "properties": {
+            "port": {
+              "$ref": "#/$defs/tcpPort",
+              "default": 8542
+            },
+            "ipAddresses": {
+              "$ref": "#/$defs/ipsAndHostnames",
+              "default": [ "0.0.0.0" ]
+            }
+          }
+        },
+        "http": {
+          "type": "object",
+          "description": "Configures the agent to use HTTP. When using AT-TLS, this object should be defined but with http.attls=true. It is insecure and absolutely not recommended to use http without AT-TLS",
+          "properties": {
+            "port": {
+              "$ref": "#/$defs/tcpPort"
+            },
+            "attls": {
+              "type": "boolean",
+              "default": false,
+              "description": "Tells the app-server whether or not the agent should be reached using HTTPS or HTTP when contacting the HTTP port"
+            },
+            "ipAddresses": {
+              "$ref": "#/$defs/ipsAndHostnames"
+            }
+          }
+        },
+        "mediationLayer": {
+          "type": "object",
+          "properties": {
+            "serviceName": {
+              "type": "string",
+              "description": "What the agent will be named when found on the API Mediation Layer"
+            },
+            "enabled": {
+              "type": "boolean",
+              "description": "Controls whether the agent should register to the API Mediation Layer, and whether the app-server should contact it via the Mediation Layer"
+            }
+          }
+        },
+        "handshakeTimeout": {
+          "type": "integer",
+          "default": 30000,
+          "description": "The timeout in milliseconds on the startup check the app-server will do to find its agent and check agent capabilities"
+        },
+        "jwt": {
+          "type": "object",
+          "properties": {
+            "fallback": {
+              "type": "boolean",
+              "description": "Whether the agent will issue and accept cookies from itself in the event a JWT cannot be provided"
+            }
+          }
+        }
+      }
+    },
+    "productDir": {
+      "type": "string",
+      "description": "The location of the product scope of the configuration dataservice"
+    },
+    "siteDir": {
+      "type": "string",
+      "description": "The location of the site scope of the configuration dataservice"
+    },
+    "instanceDir": {
+      "type": "string",
+      "description": "The location of the instance scope of the configuration dataservice"
+    },
+    "groupsDir": {
+      "type": "string",
+      "description": "The location of the groups scope of the configuration dataservice"
+    },
+    "usersDir": {
+      "type": "string",
+      "description": "The location of the user scope of the configuration dataservice"
+    },
+    "pluginsDir": {
+      "type": "string",
+      "description": "The location where plugin locator JSON files are found, which are used by the app-server and agent to locate and use plugins"
+    },
+    "dataserviceAuthentication": {
+      "type": "object",
+      "description": "Describes how the app-server will utilize the auth plugins it finds and loads at startup",
+      "properties": {
+        "rbac": {
+          "type": "boolean",
+          "description": "Determines whether or not the app-server will issue authorization requests to the authentication plugins for each HTTP(S) request to achieve Role Based Access Control",
+          "default": false
+        },
+        "defaultAuthentication": {
+          "type": "string",
+          "description": "Instructs the app-server which authentication category to issue auth requests to if a specific one was not specified by the caller or plugin",
+          "default": "fallback"
+        },
+        "implementationDefaults": {
+          "type": "object",
+          "deprecated": true,
+          "patternProperties": {
+            "^.*$": {
+              "type": "object",
+              "properties": {
+                "plugins": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/$defs/reverseDomainNotation"
+                  },
+                  "uniqueItems": true
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "logLevels": {
+      "type": "object",
+      "patternProperties": {
+        "_zsf.bootstrap": {
+          "description": "Logging that pertains to the startup of the server.",
+          "$ref": "#/$defs/logLevel"
+        },
+        "_zsf.auth": {
+          "description": "Logging for network calls that must be checked for authentication and authorization purposes.",
+          "$ref": "#/$defs/logLevel"
+        },
+        "_zsf.static": {
+          "description": "Logging of the serving of static files (such as images) from an application's /web folder.",
+          "$ref": "#/$defs/logLevel"
+        },
+        "_zsf.child": {
+          "description": "Logging of child processes, if any.",
+          "$ref": "#/$defs/logLevel"
+        },
+        "_zsf.utils": {
+          "description": "Logging for miscellaneous utilities that the server relies upon.",
+          "$ref": "#/$defs/logLevel"
+        },
+        "_zsf.proxy": {
+          "description": "Logging for proxies that are set up in the server.",
+          "$ref": "#/$defs/logLevel"
+        },
+        "_zsf.install": {
+          "description": "Logging for the installation of plug-ins.",
+          "$ref": "#/$defs/logLevel"
+        },
+        "_zsf.apiml": {
+          "description": "Logging for communication with the api mediation layer.",
+          "$ref": "#/$defs/logLevel"
+        },
+        "_zsf.routing": {
+          "description": "Logging for dispatching network requests to plug-in dataservices.",
+          "$ref": "#/$defs/logLevel"
+        },
+        "_zsf.network": {
+          "description": "Logging for the HTTPS server status (connection, ports, IP, and so on)",
+          "$ref": "#/$defs/logLevel"
+        },
+        "_zss.traceLevel": {
+          "description": "Controls general server logging verbosity.",
+          "$ref": "#/$defs/logLevel"
+        },
+        "_zss.fileTrace": {
+          "description": "Logs file serving behavior (if file serving is enabled).",
+          "$ref": "#/$defs/logLevel"
+        },
+        "_zss.socketTrace": {
+          "description": "Logs general TCP Socket behavior.",
+          "$ref": "#/$defs/logLevel"
+        },
+        "_zss.httpParseTrace": {
+          "description": "Logs parsing of HTTP messages.",
+          "$ref": "#/$defs/logLevel"
+        },
+        "_zss.httpDispatchTrace": {
+          "description": "Logs dispatching of HTTP messages to dataservices.",
+          "$ref": "#/$defs/logLevel"
+        },
+        "_zss.httpHeadersTrace": {
+          "description": "Logs parsing and setting of HTTP headers.",
+          "$ref": "#/$defs/logLevel"
+        },
+        "_zss.httpSocketTrace": {
+          "description": "Logs TCP socket behavior for HTTP.",
+          "$ref": "#/$defs/logLevel"
+        },
+        "_zss.httpCloseConversationTrace": {
+          "description": "Logs HTTP behavior for when an HTTP conversation ends.",
+          "$ref": "#/$defs/logLevel"
+        },
+        "_zss.httpAuthTrace": {
+          "description": "Logs behavior for session security.",
+          "$ref": "#/$defs/logLevel"
+        },
+        "^.*$": {
+          "$ref": "#/$defs/logLevel"
+        }
+      }
+    },
+    "logLanguage": {
+      "type": "string",
+      "default": "en"
+    },
+    "languages": {
+      "properties": {
+        "java": {
+          "type": "object",
+          "properties": {
+            "portRange": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/tcpPort",
+                "minItems": 2,
+                "maxItems": 2
+              }
+            },
+            "ports": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/tcpPort",
+                "uniqueItems": true
+              }
+            },
+            "jar": {
+              "type": "object",
+              "properties": {
+                "runtimes": {
+
+                },
+                "runtimeMapping": {
+
+                }
+              }
+            },
+            "war" : {
+              "type": "object",
+              "required": [ "javaAppServer" ],
+              "properties": {
+                "pluginGrouping": {
+                  "type": "array",
+                  "description": "A list of which java plugins should run in which java runtimes. If not present, all will run from one runtime",
+                  "items": {
+                    "type": "object",
+                    "required": [ "plugins" ],
+                    "properties": {
+                      "java": {
+                        "type": "string"
+                      },
+                      "plugins": {
+                        "type": "array",
+                        "items": {
+                          "$ref": "#/$defs/reverseDomainNotation"
+                        }
+                      }
+                    }
+                  }
+                },
+                "defaultGrouping": {
+                  "type": "string",
+                  "description": "Determines whether services should be grouped together in as few processes as possible or run as 1 process per service",
+                  "enum": [ "microservice", "appserver" ]
+                },
+                "javaAppServer": {
+                  "type": "object",
+                  "propeties": {
+                    "type": {
+                      "type": "string",
+                      "enum": [ "tomcat" ]
+                    },
+                    "path": {
+                      "type": "string"
+                    },
+                    "config": {
+                      "type": "string",
+                      "description": "The file path to the appserver config file"
+                    },
+                    "https": {
+                      "type": "object",
+                      "properties": {
+                        "key": {
+                          "$ref": "#/$defs/pathCertObject"
+                        },
+                        "certificate": {
+                          "$ref": "#/$defs/pathCertObject"
+                        },
+                        "certificateChain": {
+                          "$ref": "#/$defs/pathCertObject"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "runtimes": {
+              "type": "object",
+              "patternProperties": {
+                "^.*$": {
+                  "type": "object",
+                  "required": [ "home" ],
+                  "properties": {
+                    "home": {
+                      "type": "string",
+                      "description": "The path of the runtime's home directory"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "instanceID": {
+      "type": "string",
+      "description": "The ID used in determining which set of RBAC resources to verify during authorization"
+    },
+    "privilegedServerName": {
+      "type": "string",
+      "description": "The nickname of the ZIS server to be used"
+    }
+  },
+  "$defs": {
+    "reverseDomainNotation": {
+      "type": "string",
+      "pattern": "^[A-Za-z]{2,6}((?!-)\\.[A-Za-z0-9-]{1,63}(?<!-))+$"
+    },
+    "nodejsDefaultCiphers": {
+      "const": "NODEJS",
+      "description": "Instructs app-server to use the default cipher list of nodejs when using TLS"
+    },
+    "zoweDefaultCiphers": {
+      "const": "",
+      "description": "Instructs app-server to use its default cipher list when using TLS"
+    },
+    "customCiphers": {
+      "type": "string",
+      "not": {
+        "anyOf": [
+          { "$ref": "#/$defs/nodejsDefaultCiphers" },
+          { "$ref": "#/$defs/zoweDefaultCiphers" }
+        ]
+      },
+      "description": "Instructs app-server to use the list of ciphers in this string when using TLS. String must be in the form defined here https://nodejs.org/api/tls.html#modifying-the-default-tls-cipher-suite"
+    },
+    "ipv4": {
+      "type": "string",
+      "pattern": "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$"
+    },
+    "ipOrHostname": {
+      "type": "string"
+    },
+    "ipsAndHostnames": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/ipOrHostname"
+      },
+      "uniqueItems": true
+    },
+    "headerCustomization": {
+      "type": "object",
+      "properties": {
+        "substitutions": {
+          "type": "object",
+          "patternProperties": {
+            "^.*$": {
+              "oneOf": [
+                { "$ref": "#/$defs/headerSubstituteDomain" }
+              ]
+            }
+          }
+        }
+      }
+    },
+    "headerSubstituteDomain": {
+      "const": "domain",
+      "description": "Substitute the variable referenced with the value of the domain seen on the request"
+    },
+    "certObject": {
+      "type": "array",
+      "description": "The location of a file or keyring object",
+      "items": {
+        "anyOf": [
+          { "$ref": "#/$defs/fileCertObject" },
+          { "$ref": "#/$defs/pathCertObject" },
+          { "$ref": "#/$defs/safKeyringCertObject" }
+        ]
+      },
+      "uniqueItems": true
+    },
+    "fileCertObject": {
+      "type": "string",
+      "pattern": "^file:\/\/.*$"
+    },
+    "safKeyringCertObject": {
+      "type": "string",
+      "pattern": "^safkeyring:(\/\/)+.*$"
+    },
+    "pathCertObject": {
+      "type": "string",
+      "not": {
+        "anyOf": [
+          { "pattern": "^file:\/\/.*$" },
+          { "pattern": "^safkeyring:(\/\/)+.*$" }
+        ]
+      }
+    },
+    "cspPresetStrict": {
+      "const": "strict",
+      "description": "Applies builtin value 'default-src self req.hostname'"
+    },
+    "cspPresetFrameStrict": {
+      "const": "frame-strict",
+      "description": "Applies builtin value 'frame-src self req.hostname'"
+    },
+    "tcpPort": {
+      "type": "integer",
+      "description": "TCP network port",
+      "minimum": 1,
+      "maximum": 65535
+    },
+    "logLevel": {
+      "type": "integer",
+      "description": "Log level verbosity where 0 is least verbose (errors only), 5 is most verbose (trace) and 2 is default (info)",
+      "default": 2,
+      "minimum": 0,
+      "maximum": 5
+    }
+  }
+}
