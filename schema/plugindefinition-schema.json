@@ -16,10 +16,19 @@
       "type": "string",
       "pattern": "^[A-Za-z]{2,6}((?!-)\\.[A-Za-z0-9-]{1,63}(?<!-))+$"
     },
+    "semverVersion": {
+      "type": "string",
+      "description": "A semantic version, see https://semver.org/",
+      "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-((?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\\+([0-9a-zA-Z-]+(?:\\.[0-9a-zA-Z-]+)*))?$"
+    },
+    "semverRange": {
+      "type": "string",
+      "description": "A semantic version, see https://semver.org/",
+      "pattern": "^(([\\^\\~\\>\\<]?)|(>=?)|(<=?))(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-((?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\\+([0-9a-zA-Z-]+(?:\\.[0-9a-zA-Z-]+)*))?$"
+    },
     "appFwPlugin": {
       "type": "object",
       "required": ["identifier", "apiVersion", "pluginVersion", "pluginType"],
-      "additionalProperties": true,
       "propeties": {
         "identifier": {
           "$ref": "#/$defs/reverseDomainNotation",
@@ -51,7 +60,8 @@
         },
         "requirements": {
           "type": "object",
-          "description": "TODO",
+          "description": "Defining a list of requirements lets the app-server decide if your plugin should or should not be loaded according to if requirements are met in the environment.",
+          "additionalProperties": false,
           "properties": {
             "components": {
               "type": "object",
@@ -115,8 +125,27 @@
         }
       }
     },
+    "libraryPlugin": {
+      "$ref": "#/$defs/appFwPlugin",
+      "description": "Library plugins are used for hosting static web content",
+      "deprecated": true,
+      "additionalProperties": false,
+      "properties": {
+        "pluginType": {
+          "const": "library"
+        },
+        "libraryName": {
+          "type": "string"
+        },
+        "libraryVersion": {
+          "$ref": "#/$devs/semverVersion"
+        }        
+      }
+    },
     "bootstrapPlugin": {
       "$ref": "#/$defs/appFwPlugin",
+      "description": "Only one bootstrap plugin per server is intended, and its role is to bootstrap Desktop-type plugins for browser use",
+      "additionalProperties": false,
       "properties": {
         "pluginType": {
           "const": "bootstrap"
@@ -128,6 +157,8 @@
     },
     "desktopPlugin": {
       "$ref": "#/$defs/appFwPlugin",
+      "description": "Desktop plugins are webcontent which embeds application-type plugins within a web browser, regardless of if resembles a 'desktop' or not.",
+      "additionalProperties": false,
       "properties": {
         "pluginType": {
           "const": "desktop"
@@ -139,6 +170,8 @@
     },
     "applicationPlugin": {
       "$ref": "#/$defs/appFwPlugin",
+      "description": "Application plugins contain web content and/or network APIs which are compatible with embedding in a Desktop plugin web page, but may also be used by themselves",
+      "additionalProperties": false,
       "properties": {
         "pluginType": {
           "const": "application"
@@ -160,7 +193,9 @@
     },
     "nodeAuthenticationPlugin": {
       "$ref": "#/$defs/appFwPlugin",
+      "description": "The app-server delegates to these plugins for user permission management tasks such as authentication and authorization",
       "required": [ "filename" ],
+      "additionalProperties": false,
       "properties": {
         "filename": {
           "type": "string",
@@ -176,16 +211,6 @@
         }
       }
     },
-    "semverVersion": {
-      "type": "string",
-      "description": "A semantic version, see https://semver.org/",
-      "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-((?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\\+([0-9a-zA-Z-]+(?:\\.[0-9a-zA-Z-]+)*))?$"
-    },
-    "semverRange": {
-      "type": "string",
-      "description": "A semantic version, see https://semver.org/",
-      "pattern": "^(([\\^\\~\\>\\<]?)|(>=?)|(<=?))(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-((?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\\+([0-9a-zA-Z-]+(?:\\.[0-9a-zA-Z-]+)*))?$"
-    },
     "genericWebContent": {
       "type": "object",
       "not": {
@@ -199,6 +224,7 @@
     "nativeWebContent": {
       "$ref": "#/$defs/appWebContent",
       "description": "A Native application is one that provides a /web/main.js file which can be run within the Zowe Desktop when the user clicks its icon",
+      "additionalProperties": false,
       "properties": {
         "framework": {
           "type": "string",
@@ -209,18 +235,21 @@
     "iframeWebContent": {
       "$ref": "#/$defs/appWebContent",
       "description": "An iframe application is one that provides some html file either within the /web folder or found on another server at runtime, which can be embedded within the Zowe Desktop when the user clicks its icon",
+      "additionalProperties": false,
       "properties": {
         "framework": {
           "const": "iframe"
         },
-        "destination": {
-          "type": "string",
-          "description": "A URL with shell-style ${} subtitutions allowed which states which address the iframe should load."
-        },
-        "startingPage": {
-          "type": "string",
-          "description": "A filename within the /web folder of the plugin, which the iframe should load."
-        },
+        "oneOf": [
+          "destination": {
+            "type": "string",
+            "description": "A URL with shell-style ${} subtitutions allowed which states which address the iframe should load."
+          },
+          "startingPage": {
+            "type": "string",
+            "description": "A filename within the /web folder of the plugin, which the iframe should load."
+          }
+        ],
         "standaloneUseFramework": {
           "type": "boolean",
           "default": false,
@@ -232,6 +261,7 @@
       "type": "object",
       "description": "A description of an application which can be run within the Zowe Desktop",
       "required": [ "framework", "launchDefinition", "descriptionKey", "descriptionDefault", "defaultWindowStyle" ],
+      "additionalProperties": false,
       "properties": {
         "framework": {
           "type": "string",
@@ -288,6 +318,7 @@
     },
     "service": {
       "type": "object",
+      "description": "A part of a plugin which adds a network API to a server such as a REST or websocket API",
       "required": ["type", "version", "name"],
       "properties": {
         "type": {
@@ -305,6 +336,7 @@
     "externalService": {
       "$ref": "#/$defs/service",
       "description": "A proxy service which is hosted from the app-server",
+      "additionalProperties": false,
       "properties": {
         "type": {
           "const": "external"
@@ -334,6 +366,7 @@
       "$ref": "#/$defs/service",
       "description": "An ExpressJS router service hosted from the app-server",
       "required": ["type", "version", "name", "fileName", "routerFactory"],
+      "additionalProperties": false,
       "properties": {
         "type": {
           "const": "router"
@@ -373,6 +406,7 @@
       "description": "A nodejs callback service that acts upon expressjs request and response objects. It runs within the app-server",
       "required": ["type", "version", "name", "fileName", "methods", "handlerInstaller"],
       "deprecated": true,
+      "additionalProperties": false,
       "properties": {
         "type": {
           "const": "nodeService"
@@ -409,12 +443,14 @@
       "$ref": "#/$defs/service",
       "description": "A service that runs within ZSS. It uses a callback written in C that recieves a request and response struct",
       "required": ["type", "version", "name", "methods", "initializerName"],
+      "additionalProperties": false,
       "properties": {
         "type": {
           "const": "service"
         },
         "initializerLookupMethod": {
           "type": "string",
+          "description": "States whether the service is to be found as a plugin or is built-in to ZSS already",
           "enum": ["external", "internal"],
           "deprecated": false
         },
@@ -454,6 +490,7 @@
       "type": "object",
       "description": "A service which points to another service. The app-server will setup a URL which calls the source when accessed",
       "required": [ "type", "sourceName", "localName", "sourcePlugin", "versionRange" ],
+      "additionalProperties": false,
       "properties": {
         "type": {
           "const": "import"

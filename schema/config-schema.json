@@ -5,17 +5,23 @@
   "description": "Configuration properties for the app-server, as specified within a configuration file such as zowe.yaml",
   "type": "object",
   "required": [ "productDir", "siteDir", "instanceDir", "groupsDir", "usersDir", "pluginsDir", "dataserviceAuthentication", "node" ],
+  "additionalProperties": false,
   "properties": {
     "node": {
       "type": "object",
       "description": "Configuration options specific to the app-server and things it depends upon",
+      "additionalProperties": false,
       "properties": {
         "https": {
           "type": "object",
+          "additionalProperties": false,
           "properties": {
             "port": {
-              "$ref": "#/$defs/tcpPort",
-              "default": 8554
+              "oneOf": [
+                { "$ref": "#/$defs/tcpPort" },
+                { "$ref": "#/$defs/reservedTcpPort" }, 
+              ],
+              "default": 7556
             },
             "pfx": {
               "type": "string",
@@ -36,7 +42,7 @@
             },
             "secureOptions": {
               "type": "integer",
-              "description": "Controls nodejs' use of OpenSSL via integers composed of the values in the references https://github.com/openssl/openssl/blob/master/include/openssl/ssl.h and https://nodejs.org/api/crypto.html#openssl-options"
+              "description": "Controls nodejs' use of OpenSSL via integers composed of the values in the references https://github.com/openssl/openssl/blob/master/include/openssl/ssl.h.in and https://nodejs.org/api/crypto.html#openssl-options"
             },
             "secureProtocol": {
               "type": "string",
@@ -67,9 +73,13 @@
         "http": {
           "type": "object",
           "description": "Allows the app-server to run in HTTP mode. This should never be done without a TLS wrapper such as AT-TLS",
+          "additionalProperties": false,
           "properties": {
             "port": {
-              "$ref": "#/$defs/tcpPort"
+              "oneOf": [
+                { "$ref": "#/$defs/tcpPort" },
+                { "$ref": "#/$defs/reservedTcpPort" }, 
+              ]
             },
             "ipAddresses": {
               "$ref": "#/$defs/ipsAndHostnames"
@@ -79,9 +89,11 @@
         "mediationLayer": {
           "type": "object",
           "description": "Properties relating to how the app-server should interact with and find the API Mediation Layer components",
+          "additionalProperties": false,
           "properties": {
             "server": {
               "type": "object",
+              "additionalProperties": false,
               "properties": {
                 "isHttps": {
                   "type": "boolean",
@@ -98,11 +110,17 @@
                   "description": "The hostname or IP where the Zowe Discovery service is running"
                 },
                 "gatewayPort": {
-                  "$ref": "#/$defs/tcpPort",
+                  "oneOf": [
+                    { "$ref": "#/$defs/tcpPort" },
+                    { "$ref": "#/$defs/reservedTcpPort" }, 
+                  ],
                   "description": "The port where the Zowe Gateway service is running"
                 },
                 "port": {
-                  "$ref": "#/$defs/tcpPort",
+                  "oneOf": [
+                    { "$ref": "#/$defs/tcpPort" },
+                    { "$ref": "#/$defs/reservedTcpPort" }, 
+                  ],
                   "description": "The port where the Zowe Discovery service is running"
                 },
                 "enabled": {
@@ -111,6 +129,7 @@
                 },
                 "cachingService": {
                   "type": "object",
+                  "additionalProperties": false,
                   "properties": {
                     "enabled": {
                       "type": "boolean",
@@ -137,6 +156,7 @@
           "description": "The app-server can start one or more processes as children of itself, and propagate signals sent to the app server to these. This can be used to start related servers at the same time as the app-server.",
           "items": {
             "type": "object",
+            "additionalProperties": false,
             "properties": {
               "path": {
                 "type": "string",
@@ -152,6 +172,7 @@
         },
         "session": {
           "type": "object",
+          "additionalProperties": false,
           "properties": {
             "timeoutMS": {
               "type": "integer",
@@ -219,6 +240,7 @@
     "agent": {
       "type": "object",
       "description": "Configuration options specific to app-server agents, such as ZSS. These options are used to configure the agent, but also to tell app-server about the agent configuration",
+      "additionalProperties": false,
       "properties": {
         "host": {
           "type": "string",
@@ -227,10 +249,14 @@
         "https": {
           "type": "object",
           "description": "Configures the agent to use HTTPS.",
+          "additionalProperties": false,
           "properties": {
             "port": {
-              "$ref": "#/$defs/tcpPort",
-              "default": 8542
+              "oneOf": [
+                { "$ref": "#/$defs/tcpPort" },
+                { "$ref": "#/$defs/reservedTcpPort" }, 
+              ],
+              "default": 7557
             },
             "ipAddresses": {
               "$ref": "#/$defs/ipsAndHostnames",
@@ -241,9 +267,13 @@
         "http": {
           "type": "object",
           "description": "Configures the agent to use HTTP. When using AT-TLS, this object should be defined but with http.attls=true. It is insecure and absolutely not recommended to use http without AT-TLS",
+          "additionalProperties": false,
           "properties": {
             "port": {
-              "$ref": "#/$defs/tcpPort"
+              "oneOf": [
+                { "$ref": "#/$defs/tcpPort" },
+                { "$ref": "#/$defs/reservedTcpPort" }, 
+              ]
             },
             "attls": {
               "type": "boolean",
@@ -257,6 +287,7 @@
         },
         "mediationLayer": {
           "type": "object",
+          "additionalProperties": false,
           "properties": {
             "serviceName": {
               "type": "string",
@@ -275,6 +306,7 @@
         },
         "jwt": {
           "type": "object",
+          "additionalProperties": false,
           "properties": {
             "fallback": {
               "type": "boolean",
@@ -311,6 +343,7 @@
     "dataserviceAuthentication": {
       "type": "object",
       "description": "Describes how the app-server will utilize the auth plugins it finds and loads at startup",
+      "additionalProperties": false,
       "properties": {
         "rbac": {
           "type": "boolean",
@@ -328,6 +361,7 @@
           "patternProperties": {
             "^.*$": {
               "type": "object",
+              "additionalProperties": false,
               "properties": {
                 "plugins": {
                   "type": "array",
@@ -421,6 +455,34 @@
           "description": "Logs behavior for session security.",
           "$ref": "#/$defs/logLevel"
         },
+        "_zss.mvdserver": {
+          "description": "Generic logging for ZSS items not covered by other loggers",
+          "$ref": "#/$defs/logLevel"
+        },
+        "_zss.ctds": {
+          "description": "Controls logging of the built-in CTDS service",
+          "$ref": "#/$defs/logLevel"
+        },
+        "_zss.security": {
+          "description": "Controls logging of the built-in security service",
+          "$ref": "#/$defs/logLevel"
+        },
+        "_zss.unixfile": {
+          "description": "Controls logging of the built-in unixfile service",
+          "$ref": "#/$defs/logLevel"
+        },
+        "_zss.dataservice": {
+          "description": "Controls logging of generic dataservice tasks",
+          "$ref": "#/$defs/logLevel"
+        },
+        "_zss.apimlstorage": {
+          "description": "Controls logging of the dataservice storage API",
+          "$ref": "#/$defs/logLevel"
+        },
+        "_zss.jwk": {
+          "description": "Controls logging of JWK use for SSO",
+          "$ref": "#/$defs/logLevel"
+        },
         "^.*$": {
           "$ref": "#/$defs/logLevel"
         }
@@ -431,14 +493,19 @@
       "default": "en"
     },
     "languages": {
+      "additionalProperties": false,
       "properties": {
         "java": {
           "type": "object",
+          "additionalProperties": false,
           "properties": {
             "portRange": {
               "type": "array",
               "items": {
-                "$ref": "#/$defs/tcpPort",
+                "anyOf": [
+                  { "$ref": "#/$defs/tcpPort" },
+                  { "$ref": "#/$defs/reservedTcpPort" }, 
+                ],
                 "minItems": 2,
                 "maxItems": 2
               }
@@ -446,7 +513,10 @@
             "ports": {
               "type": "array",
               "items": {
-                "$ref": "#/$defs/tcpPort",
+                "anyOf": [
+                  { "$ref": "#/$defs/tcpPort" },
+                  { "$ref": "#/$defs/reservedTcpPort" }, 
+                ],
                 "uniqueItems": true
               }
             },
@@ -464,6 +534,7 @@
             "war" : {
               "type": "object",
               "required": [ "javaAppServer" ],
+              "additionalProperties": false,
               "properties": {
                 "pluginGrouping": {
                   "type": "array",
@@ -471,6 +542,7 @@
                   "items": {
                     "type": "object",
                     "required": [ "plugins" ],
+                    "additionalProperties": false,
                     "properties": {
                       "java": {
                         "type": "string"
@@ -505,6 +577,7 @@
                     },
                     "https": {
                       "type": "object",
+                      "additionalProperties": false,
                       "properties": {
                         "key": {
                           "$ref": "#/$defs/pathCertObject"
@@ -527,6 +600,7 @@
                 "^.*$": {
                   "type": "object",
                   "required": [ "home" ],
+                  "additionalProperties": false,
                   "properties": {
                     "home": {
                       "type": "string",
@@ -554,6 +628,20 @@
       "type": "string",
       "pattern": "^[A-Za-z]{2,6}((?!-)\\.[A-Za-z0-9-]{1,63}(?<!-))+$"
     },
+    "ipv4": {
+      "type": "string",
+      "pattern": "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$"
+    },
+    "ipOrHostname": {
+      "type": "string"
+    },
+    "ipsAndHostnames": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/ipOrHostname"
+      },
+      "uniqueItems": true
+    },
     "nodejsDefaultCiphers": {
       "const": "NODEJS",
       "description": "Instructs app-server to use the default cipher list of nodejs when using TLS"
@@ -572,22 +660,9 @@
       },
       "description": "Instructs app-server to use the list of ciphers in this string when using TLS. String must be in the form defined here https://nodejs.org/api/tls.html#modifying-the-default-tls-cipher-suite"
     },
-    "ipv4": {
-      "type": "string",
-      "pattern": "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$"
-    },
-    "ipOrHostname": {
-      "type": "string"
-    },
-    "ipsAndHostnames": {
-      "type": "array",
-      "items": {
-        "$ref": "#/$defs/ipOrHostname"
-      },
-      "uniqueItems": true
-    },
     "headerCustomization": {
       "type": "object",
+      "additionalProperties": false,
       "properties": {
         "substitutions": {
           "type": "object",
@@ -645,8 +720,15 @@
     "tcpPort": {
       "type": "integer",
       "description": "TCP network port",
-      "minimum": 1,
+      "minimum": 1024,
       "maximum": 65535
+    },
+    "reservedTcpPort": {
+      "type": "integer",
+      "description": "Reserved TCP network ports. Can be used but discouraged due to their standardized use by common programs",
+      "deprecated": true,
+      "minimum": 1,
+      "maximum": 1023
     },
     "logLevel": {
       "type": "integer",
