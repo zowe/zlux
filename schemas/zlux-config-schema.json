@@ -1,11 +1,11 @@
 {
-  "$schema": "https://json-schema.org/draft-07/schema",
-  "$id": "https://github.com/zowe/zlux/zlux.schema.json",
+  "$schema": "https://json-schema.org/draft/2019-09/schema",
+  "$id": "https://zowe.org/schema/app-server-config",
   "title": "app-server configuration",
   "description": "Configuration properties for the app-server, as specified within a configuration file such as zowe.yaml",
   "type": "object",
   "required": [ "productDir", "siteDir", "instanceDir", "groupsDir", "usersDir", "pluginsDir", "dataserviceAuthentication", "node" ],
-  "additionalProperties": false,
+  "additionalProperties": true,
   "properties": {
     "node": {
       "type": "object",
