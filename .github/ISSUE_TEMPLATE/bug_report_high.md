@@ -5,13 +5,9 @@ title: ''
 labels: bug, new, severity-high
 ---
 
-<!-- Thanks for deciding to open an issue. Before submitting, please see the following information. -->
-<!-- Before opening a new issue, please search our existing issues for similar ones: https://github.com/zowe/zlux/issues -->
-<!-- You might also find a solution on our documentation website https://docs.zowe.org/stable/troubleshoot/troubleshooting or by using its search bar -->
+<!-- Before opening a bug ticket, check if it can be solved by the website troubleshooting https://docs.zowe.org/stable/troubleshoot/troubleshooting or by using its search bar -->
 
 **Describe the bug**
-<!-- A clear and concise description of the bug or error. -->
-A clear and concise description of what the bug is.
 
 **Steps to Reproduce**
 
@@ -19,10 +15,8 @@ A clear and concise description of what the bug is.
 2.
 
 **Expected behavior**
-<!-- A clear and concise description of what you expected to happen. -->
 
-**Screenshots**
-<!-- If applicable, add screenshots to help explain your problem. -->
+**Screenshots (if needed)**
 
 **Logs**
 <!-- If applicable, add server logs collected at the time of your problem. -->
@@ -51,4 +45,3 @@ A clear and concise description of what the bug is.
 
 
 **Additional context**
-Add any other context about the problem here.
