@@ -1,0 +1,30 @@
+name: 'Close stale issues and PRs'
+on:
+  schedule:
+    - cron: '0 */6 * * *'
+
+permissions:
+  issues: write
+  pull-requests: write
+
+jobs:
+  stale:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/stale@v5
+        with:
+          close-issue-message: >
+            This issue has been automatically closed due to lack of activity.
+            If this issue is still valid and important to you, it can be reopened.
+          days-before-close: 90
+          days-before-stale: 180
+          exempt-all-assignees: true
+          exempt-all-milestones: true
+          exempt-issue-labels: "community-upvoted, dependency, for-review, keep, security, high-severity, critical-severity, help-wanted, good-first-issue"
+          stale-issue-label: "stale-reopen-if-needed"
+          stale-issue-message: >
+            This issue has been automatically marked as stale because it has not had
+            recent activity. It will be closed if no further activity occurs,
+            but can be reopened if needed. Thank you for your contributions.
+          stale-pr-label: "stale-reopen-if-needed"
+          start-date: "2022-05-30T00:00:00Z"
